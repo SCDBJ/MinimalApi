@@ -1,0 +1,6 @@
+@MinimalApi_HostAddress = http://localhost:5174
+
+POST {{MinimalApi_HostAddress}}/GetCategory/
+Accept: application/json
+
+###
