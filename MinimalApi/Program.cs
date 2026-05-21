@@ -11,6 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// 显式指定监听 0.0.0.0 和端口
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Listen(System.Net.IPAddress.Any, 26500);
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -29,5 +34,7 @@ app.MapIncomeRecordEndpoints();
 app.MapWebSiteEndpoints();
 app.MapStockTradingEndpoints();
 
-app.Run("http://127.0.0.1:26500");
+//app.Run("http://127.0.0.1:26500");
+//app.Run("http://0.0.0.0:26500");
+app.Run();
 
