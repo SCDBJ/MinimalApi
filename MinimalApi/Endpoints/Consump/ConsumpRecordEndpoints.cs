@@ -44,10 +44,10 @@ namespace MinimalApi.Endpoints.Consump
 
                     // 1. 设置 Dapper 参数
                     var parameters = new DynamicParameters();
-                    parameters.Add("@consumpType", request.consumpType);
+                    parameters.Add("@categoryId", request.categoryId);
                     parameters.Add("@consumpAmount", request.consumpAmount);
-                    parameters.Add("@consumpTime", request.consumpTime);
                     parameters.Add("@consumpNote", request.consumpNote);
+                    parameters.Add("@consumpTime", request.consumpTime);
                     // 设置输出参数
                     parameters.Add("@IsSuccess", dbType: DbType.Boolean, direction: ParameterDirection.Output);
 
@@ -73,6 +73,28 @@ namespace MinimalApi.Endpoints.Consump
                             Success = false,
                             Message = "保存失败"
                         });
+                }
+                catch (SqlException ex)
+                {
+                    // 生产环境建议记录日志，不要直接返回 ex.Message
+                    return Results.Problem($"数据库错误: {ex.Message}");
+                }
+            });
+
+            app.MapPost("/api/consumprecord-autoaccount", async (IConfiguration config) =>
+            {
+                try
+                {
+                    using var connection = new SqlConnection(config.GetConnectionString("DefaultConnection"));
+
+                    // 2. 执行存储过程
+                    await connection.ExecuteAsync(
+                        "usp_ConsumpRecord_AutoAccount", // 存储过程名称
+                        commandType: CommandType.StoredProcedure
+                    );
+                    
+                    // 4. 根据状态返回结果
+                    return Results.NoContent();
                 }
                 catch (SqlException ex)
                 {
@@ -114,7 +136,7 @@ namespace MinimalApi.Endpoints.Consump
         }
     }
     public record ConsumpRecordObtain(DateTime startTime, DateTime endTime);
-    public record ConsumpRecord(int consumpId,string consumpType,decimal consumpAmount,DateTime consumpTime,DateTime createTime,string consumpNote);
-    public record ConsumpRecordAdd(string consumpType, decimal consumpAmount, DateTime consumpTime,string consumpNote);
+    public record ConsumpRecord(int consumpId, string categoryName, decimal consumpAmount,DateTime consumpTime,DateTime createTime,string consumpNote);//字段顺序与存储过程保持一致
+    public record ConsumpRecordAdd(int categoryId, decimal consumpAmount, DateTime consumpTime,string consumpNote);
 
 }
