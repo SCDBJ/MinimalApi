@@ -44,7 +44,7 @@ namespace MinimalApi.Endpoints.Consump
 
                     // 1. 设置 Dapper 参数
                     var parameters = new DynamicParameters();
-                    parameters.Add("@incomeType", request.incomeType);
+                    parameters.Add("@categoryId", request.categoryId);
                     parameters.Add("@incomeAmount", request.incomeAmount);
                     parameters.Add("@incomeTime", request.incomeTime);
                     parameters.Add("@incomeNote", request.incomeNote);
@@ -114,7 +114,7 @@ namespace MinimalApi.Endpoints.Consump
         }
     }
     public record IncomeRecordObtain(DateTime startTime, DateTime endTime);
-    public record IncomeRecord(int incomeId,string incomeType,decimal incomeAmount,DateTime incomeTime,DateTime createTime,string incomeNote);
-    public record IncomeRecordAdd(string incomeType, decimal incomeAmount, DateTime incomeTime, string incomeNote);
+    public record IncomeRecord(int incomeId, string categoryName, decimal incomeAmount,DateTime incomeTime,DateTime createTime,string incomeNote);
+    public record IncomeRecordAdd(int categoryId, decimal incomeAmount, DateTime incomeTime, string incomeNote);
 
 }
