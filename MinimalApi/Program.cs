@@ -4,6 +4,10 @@ using MinimalApi.Endpoints.Consump;
 using MinimalApi.Endpoints.WebSite;
 using MinimalApi.Endpoints.StockTrade;
 
+using System.Reflection;
+
+// 关键代码：将工作目录切换为当前 .exe 所在的目录
+Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!);
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -22,6 +26,9 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     // 自定义一个 DateTime 转换器
     options.SerializerOptions.Converters.Add(new MinimalApi.DateTimeConverter("yyyy-MM-dd HH:mm:ss"));
 });
+
+
+
 // 启用 Windows 服务支持
 builder.Host.UseWindowsService();
 var app = builder.Build();
@@ -33,7 +40,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 // 注册路由扩展
 app.MapCategoryEndpoints();
@@ -41,8 +48,5 @@ app.MapConsumpRecordEndpoints();
 app.MapIncomeRecordEndpoints();
 app.MapWebSiteEndpoints();
 app.MapStockTradingEndpoints();
-
-//app.Run("http://127.0.0.1:26500");
-//app.Run("http://0.0.0.0:26500");
 app.Run();
 
