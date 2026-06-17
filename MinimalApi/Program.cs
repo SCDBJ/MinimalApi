@@ -22,6 +22,8 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     // 自定义一个 DateTime 转换器
     options.SerializerOptions.Converters.Add(new MinimalApi.DateTimeConverter("yyyy-MM-dd HH:mm:ss"));
 });
+// 启用 Windows 服务支持
+builder.Host.UseWindowsService();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
