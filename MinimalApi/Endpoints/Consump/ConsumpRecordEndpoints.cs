@@ -136,7 +136,7 @@ namespace MinimalApi.Endpoints.Consump
         }
     }
     public record ConsumpRecordObtain(DateTime startTime, DateTime endTime);
-    public record ConsumpRecord(int consumpId, string categoryName, decimal consumpAmount,DateTime consumpTime,DateTime createTime,string consumpNote);//字段顺序与存储过程保持一致
+    public record ConsumpRecord(int consumpId,int categoryId, string categoryName, decimal consumpAmount,DateTime consumpTime,DateTime createTime,string consumpNote);//字段顺序与存储过程保持一致
     public record ConsumpRecordAdd(int categoryId, decimal consumpAmount, DateTime consumpTime,string consumpNote);
 
 }
