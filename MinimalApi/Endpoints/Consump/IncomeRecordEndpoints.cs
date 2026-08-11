@@ -2,8 +2,9 @@
 
 using Microsoft.Data.SqlClient;
 
-using System.Data;
+using MinimalApi.Endpoints.Common;
 
+using System.Data;
 namespace MinimalApi.Endpoints.Consump
 {
     public static class IncomeRecordEndpoints
@@ -138,33 +139,43 @@ namespace MinimalApi.Endpoints.Consump
                 }
             });
 
-            app.MapPost("/api/salaryrecord-add", async (SalaryRecordAdd request, IConfiguration config) =>
+            app.MapPost("/api/salaryrecord-add", async (IConfiguration config) =>
             {
                 try
                 {
+                    List<SalaryItem>? salaryList = SalaryDetail.GetSalary();
+                    if (salaryList == null|| salaryList!=null&&salaryList.Count==0)
+                    {
+                        return Results.BadRequest(new
+                       {
+                           Success = false,
+                           Message = "保存失败"
+                       });
+                    }
+
                     using var connection = new SqlConnection(config.GetConnectionString("DefaultConnection"));
 
                     // 1. 设置 Dapper 参数
                     var parameters = new DynamicParameters();
-                    parameters.Add("@datacyear", request.datacyear);
-                    parameters.Add("@datacperiod", request.datacperiod);
-                    parameters.Add("@dataf_32", request.dataf_32);
-                    parameters.Add("@dataf_131", request.dataf_131);
-                    parameters.Add("@dataf_134", request.dataf_134);
-                    parameters.Add("@dataf_40", request.dataf_40);
-                    parameters.Add("@dataf_94", request.dataf_94);
-                    parameters.Add("@dataf_95", request.dataf_95);
-                    parameters.Add("@dataf_96", request.dataf_96);
-                    parameters.Add("@dataf_97", request.dataf_97);
-                    parameters.Add("@dataf_63", request.dataf_63);
-                    parameters.Add("@dataf_79", request.dataf_79);
-                    parameters.Add("@dataf_158", request.dataf_158);
-                    parameters.Add("@dataf_159", request.dataf_159);
-                    parameters.Add("@dataf_5", request.dataf_5);
-                    parameters.Add("@dataf_3", request.dataf_3);
-                    parameters.Add("@dataf_157", request.dataf_157);
-                    parameters.Add("@dataf_162", request.dataf_162);
-                    parameters.Add("@dataf_163", request.dataf_163);
+                    parameters.Add("@datacyear", salaryList?[0].datacyear);
+                    parameters.Add("@datacperiod", salaryList?[0].datacperiod);
+                    parameters.Add("@dataf_32", salaryList?[0].dataf_32);
+                    parameters.Add("@dataf_131", salaryList?[0].dataf_131);
+                    parameters.Add("@dataf_134", salaryList?[0].dataf_134);
+                    parameters.Add("@dataf_40", salaryList?[0].dataf_40);
+                    parameters.Add("@dataf_94", salaryList?[0].dataf_94);
+                    parameters.Add("@dataf_95", salaryList?[0].dataf_95);
+                    parameters.Add("@dataf_96", salaryList?[0].dataf_96);
+                    parameters.Add("@dataf_97", salaryList?[0].dataf_97);
+                    parameters.Add("@dataf_63", salaryList?[0].dataf_63);
+                    parameters.Add("@dataf_79", salaryList?[0].dataf_79);
+                    parameters.Add("@dataf_158", salaryList?[0].dataf_158);
+                    parameters.Add("@dataf_159", salaryList?[0].dataf_159);
+                    parameters.Add("@dataf_5", salaryList?[0].dataf_5);
+                    parameters.Add("@dataf_3", salaryList?[0].dataf_3);
+                    parameters.Add("@dataf_157", salaryList?[0].dataf_157);
+                    parameters.Add("@dataf_162", salaryList?[0].dataf_162);
+                    parameters.Add("@dataf_163", salaryList?[0].dataf_163);
                     // 设置输出参数
                     parameters.Add("@IsSuccess", dbType: DbType.Boolean, direction: ParameterDirection.Output);
 
