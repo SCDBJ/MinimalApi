@@ -152,8 +152,28 @@ namespace MinimalApi.Endpoints.Consump
                            Message = "保存失败"
                        });
                     }
-
                     using var connection = new SqlConnection(config.GetConnectionString("DefaultConnection"));
+                    string sql = @"
+        SELECT CASE WHEN EXISTS (
+            SELECT 1 FROM SalaryRecord WHERE datacyear = @datacyear and datacperiod=@datacperiod
+        ) THEN 1 ELSE 0 END";
+
+
+
+                    // 执行并返回 bool 值
+                    bool hasResult = await connection.ExecuteScalarAsync<bool>(sql, new
+                    {
+                        datacyear = salaryList?[0].datacyear,
+                        datacperiod = salaryList?[0].datacperiod
+                    });
+                    if (hasResult)
+                    {
+                        return Results.BadRequest(new
+                        {
+                            Success = false,
+                            Message = "保存失败"
+                        });
+                    }
 
                     // 1. 设置 Dapper 参数
                     var parameters = new DynamicParameters();
