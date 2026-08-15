@@ -62,7 +62,17 @@
 
                 salaryItem.dataf_96 = salaryItem.dataf_95 - salaryItem.dataf_94;
 
-                salaryItem.dataf_97 = (salaryItem.dataf_96 / salaryItem.dataf_94 * 100)?.ToString("F2") + "%";
+                if (salaryItem.dataf_94.GetValueOrDefault() != 0)
+                {
+                    // 先计算百分比数值，再格式化保留 3 位小数，最后拼接 %
+                    decimal percentValue = ((salaryItem.dataf_96 ?? 0m) / salaryItem.dataf_94.Value) * 100m;
+                    salaryItem.dataf_97 = percentValue.ToString("F3") + "%";
+                }
+                else
+                {
+                    // 分母为 null 或 0 时的默认处理
+                    salaryItem.dataf_97 = "0.000%";
+                }
 
                 if (rootobject.salaryList?.wa_dataf_63 != null)
                 {
