@@ -66,7 +66,7 @@
                 {
                     // 先计算百分比数值，再格式化保留 3 位小数，最后拼接 %
                     decimal percentValue = ((salaryItem.dataf_96 ?? 0m) / salaryItem.dataf_94.Value) * 100m;
-                    salaryItem.dataf_97 = percentValue.ToString("F3") + "%";
+                    salaryItem.dataf_97 = percentValue.ToString("F2") + "%";
                 }
                 else
                 {
