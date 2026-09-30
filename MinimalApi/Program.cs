@@ -10,6 +10,17 @@ using System.Reflection;
 Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!);
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.SetIsOriginAllowed(_ => true) // 动态匹配任意 Origin，兼容 credentials
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();           // 允许带凭据
+    });
+});
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -39,7 +50,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+//【关键修复点】：在此处激活并启用 CORS 中间件！
+// 必须放在 app.MapXxxEndpoints 路由映射之前！
+app.UseCors("AllowAll");
 //app.UseHttpsRedirection();
 
 // 注册路由扩展

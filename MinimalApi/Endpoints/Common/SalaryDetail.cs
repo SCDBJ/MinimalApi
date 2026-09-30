@@ -8,7 +8,7 @@
         /// <returns></returns>
         public static List<SalaryItem>? GetSalary()
         {
-            var path = AppDomain.CurrentDomain.BaseDirectory + "SalaryUrls";
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SalaryUrls");
             IList<string>? list = FileIOHelper.FindDirectory(path);
             if (list == null)
             {
